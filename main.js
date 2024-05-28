@@ -6,12 +6,43 @@ const readline = require('readline');
 const genAI = new GoogleGenerativeAI(key);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
 
+let chatHistory = [
+	{
+		role: "user",
+		parts: [{ text: "Hello, my name is Harun." }],
+	},
+	{
+		role: "model",
+		parts: [{ text: "Great to meet you. What would you like to know?" }],
+	},
+];
+
+
 async function generateResponse(prompt) {
 	
-	// Get response.
-	const result = await model.generateContent(prompt);
+	const chat = model.startChat({
+	    history: chatHistory,
+	    generationConfig: {
+		maxOutputTokens: 300,
+	    },
+	});
+
+	const result = await chat.sendMessage(prompt);
 	const response = await result.response;
+
+	// Get response.
 	const text = response.text();
+
+	// Update chat history with the new user prompt and model response
+	chatHistory.push({
+		role: "user",
+		parts: [{ text: prompt }],
+	});
+
+	chatHistory.push({
+		role: "model",
+		parts: [{ text: text }],
+	});
 
 	console.log(text);
 }
