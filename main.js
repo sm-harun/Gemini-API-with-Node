@@ -6,16 +6,7 @@ const readline = require('readline');
 const genAI = new GoogleGenerativeAI(key);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
 
-let chatHistory = [
-	{
-		role: "user",
-		parts: [{ text: "Hello, my name is Harun." }],
-	},
-	{
-		role: "model",
-		parts: [{ text: "Great to meet you. What would you like to know?" }],
-	},
-];
+let chatHistory = [];
 
 
 async function generateResponse(prompt) {
@@ -38,7 +29,6 @@ async function generateResponse(prompt) {
 		role: "user",
 		parts: [{ text: prompt }],
 	});
-
 	chatHistory.push({
 		role: "model",
 		parts: [{ text: text }],
